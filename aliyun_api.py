@@ -11,7 +11,7 @@ class AliyunAPI:
             config = json.load(f)
         self.API_KEY = config["access_key_id"]
         self.API_SECRET = config["access_key_secret"]
-        self.APPKEY = config["APPKEY"]
+        self.APPKEY = config["appkey"]
         self.FILE_ADDRESS = config["download_url"]
         self.api_url = "https://nls-gateway-cn-shanghai.aliyuncs.com/stream/v1/tts"
         self.client = AcsClient(self.API_KEY, self.API_SECRET, "cn-shanghai")
