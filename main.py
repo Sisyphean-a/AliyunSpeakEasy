@@ -14,6 +14,10 @@ class TextToSpeechApp:
         self.window = tk.Tk()
         self.window.title("文字转语音应用")  # 设置窗口标题
         self.window.resizable(False, False)
+        # 屏幕的宽度和高度
+        start_x = (self.window.winfo_screenwidth() - 500) // 2
+        self.window.geometry(f"+{start_x}+50")
+
 
         # 创建图形用户界面元素
         self.text_input = tk.Text(self.window, height=50, width=50)  # 文本输入框
