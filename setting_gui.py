@@ -8,7 +8,9 @@ class SettingsWindow:
         self.parent = parent
         self.window = tk.Toplevel(parent)
         self.window.title("设置")
-        self.window.geometry("300x250")
+        x = parent.winfo_x() + 90
+        y = parent.winfo_y() + 200
+        self.window.geometry(f"300x250+{x}+{y}")
 
         self.access_key_id_label = ttk.Label(self.window, text="AccessKey ID:")
         self.access_key_id_label.pack()
