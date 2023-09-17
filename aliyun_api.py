@@ -17,7 +17,7 @@ class AliyunAPI:
         # self.API_URL = "https://nls-gateway.aliyuncs.com/rest/v1/tts/async"
         self.client = AcsClient(self.API_KEY, self.API_SECRET, "cn-shanghai")
 
-    def convert_text_to_speech(self, text, speech):
+    def convert_text_to_speech(self, text, speed,voice):
         token = self.get_access_token()
         headers = {
             "Content-Type": "application/json",
@@ -27,7 +27,8 @@ class AliyunAPI:
             "token": token,
             "appkey": self.APPKEY,
             "format": "mp3",
-            "speech_rate": speech * 10
+            "speech_rate": speed * 10,
+            "voice": voice
         }
         response = requests.post(self.API_URL, headers=headers, json=data)
 
