@@ -13,7 +13,8 @@ class AliyunAPI:
         self.API_SECRET = config["access_key_secret"]
         self.APPKEY = config["appkey"]
         self.FILE_ADDRESS = config["download_url"]
-        self.api_url = "https://nls-gateway-cn-shanghai.aliyuncs.com/stream/v1/tts"
+        self.API_URL = "https://nls-gateway.aliyuncs.com/stream/v1/tts"
+        # self.API_URL = "https://nls-gateway.aliyuncs.com/rest/v1/tts/async"
         self.client = AcsClient(self.API_KEY, self.API_SECRET, "cn-shanghai")
 
     def convert_text_to_speech(self, text, speech):
@@ -24,16 +25,18 @@ class AliyunAPI:
         data = {
             "text": text,
             "token": token,
-            "APPKEY": self.APPKEY,
+            "appkey": self.APPKEY,
             "format": "mp3",
-            "speech_rate": speech * 10,
+            "speech_rate": speech * 10
         }
-        response = requests.post(self.api_url, headers=headers, json=data)
-        print(response)
+        response = requests.post(self.API_URL, headers=headers, json=data)
+
         if response.status_code == 200:
             return response.content
         else:
-            raise Exception("Failed to convert text to speech")
+            raise Exception(
+                f"网络请求失败，状态码：{response.json()['status']}，错误信息：{response.json()['message']}"
+            )
 
     def get_access_token(self):
         request = CommonRequest()

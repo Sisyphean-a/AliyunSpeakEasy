@@ -5,8 +5,8 @@ from pydub import AudioSegment
 import io
 import subprocess
 from datetime import datetime
-import time
 import os
+
 
 
 class TextToSpeechApp:
@@ -63,10 +63,10 @@ class TextToSpeechApp:
         self.message_two.grid(row=3, pady=10)
 
         self.message_yes = tk.Button(
-            self.message_frame, text="Yes", command=self.value_yes
+            self.message_frame, text="Yes", command=lambda: self.value("yes")
         )
         self.message_no = tk.Button(
-            self.message_frame, text="No", command=self.value_no
+            self.message_frame, text="No", command=lambda: self.value("no")
         )
 
         # 初始化阿里云API
@@ -113,16 +113,17 @@ class TextToSpeechApp:
         self.update_text(self.message_two, "<" + self.date + ">")
         self.message_two.config(command=self.play_audio)
 
-    def value_no(self):
-        self.message_yes.grid_forget()
-        self.message_no.grid_forget()
-        self.open_settings()
-        self.update_text(self.message_one, "重新点击合成吧")
-
-    def value_yes(self):
-        self.message_yes.grid_forget()
-        self.message_no.grid_forget()
-        next(self.yield_method)
+    def value(self, event):
+        if event == "yes":
+            self.message_yes.grid_forget()
+            self.message_no.grid_forget()
+            next(self.yield_method)
+        else:
+            self.message_yes.grid_forget()
+            self.message_no.grid_forget()
+            self.open_settings()
+            self.update_text(self.message_one, "重新点击合成吧")
+        
 
     def update_text(self, object, new_text):
         object.config(text=new_text)
