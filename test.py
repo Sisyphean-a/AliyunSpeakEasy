@@ -1,15 +1,7 @@
-import tkinter as tk
+from aliyun_api import AliyunAPI
 
+aliyun = AliyunAPI()
 
-def remove_label():
-    root.destroy()
-
-
-root = tk.Tk()
-
-label = tk.Label(root, text="这是一个消息")
-label.pack()
-
-root.after(2000, remove_label)  # 2000 毫秒后执行删除操作
-
-root.mainloop()
+text = "今天是周一，天气挺好的。"
+speed = 1
+aliyun.convert_text_to_speech(text, speed)
