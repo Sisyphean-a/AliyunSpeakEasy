@@ -1,0 +1,14 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pydub = "==0.25.1"
+requests = "==2.26.0"
+aliyun-python-sdk-core = "==2.13.3"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
