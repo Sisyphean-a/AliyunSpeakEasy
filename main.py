@@ -106,7 +106,7 @@ class TextToSpeechApp:
             with open(load_path) as f:
                 config = json.load(f)
         except FileNotFoundError:
-            self.update_text(self.message_one, "找不到配置文件\n 先设置一下吧")
+            self.update_text(self.message_one, "未生成配置文件\n 先设置一下吧")
             return
         
         # 读取参数项
@@ -136,7 +136,8 @@ class TextToSpeechApp:
 
         self.update_text(self.message_one, "开始生成，请耐心等待")
         now = datetime.now()
-        self.date = f"{now.year}-{now.month}-{now.day}-今日特价.mp3"
+        self.date = f"{now.year}-{now.month}-{now.day}"
+        self.music_path = f"{self.date}-今日特价.mp3"
 
         # 获取设定的语音速度
         speed = self.speed_scale.get()
@@ -146,19 +147,21 @@ class TextToSpeechApp:
         # 调用阿里云API将文字转换为语音
         audio_data = self.aliyun_api.convert_text_to_speech(text, speed,voice)
         # 将生成的语音保存为文件
-        with open(self.date, "wb") as f:
+        with open(self.music_path, "wb") as f:
             f.write(audio_data)
 
-
         self.update_text(self.message_one, "语音合成完成！")
-        self.update_text(self.message_two, "<" + self.date + ">")
+        self.update_text(self.message_two, "<" + self.music_path + ">")
         self.message_two.config(command=self.play_audio)
 
     def handle_user_response(self, event):
         if event == "yes":
             self.message_yes.grid_forget()
             self.message_no.grid_forget()
-            next(self.yield_method)
+            try:
+                next(self.yield_method)
+            except StopIteration:
+                return
         else:
             self.message_yes.grid_forget()
             self.message_no.grid_forget()
@@ -170,7 +173,7 @@ class TextToSpeechApp:
         self.window.update()
 
     def play_audio(self):
-        file_name = self.date
+        file_name = self.music_path
         file_abs = os.getcwd()
         file_path = os.path.join(file_abs, file_name)
         subprocess.run(["start", file_path], shell=True)
