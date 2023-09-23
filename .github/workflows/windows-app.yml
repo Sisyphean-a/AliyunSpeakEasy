@@ -23,9 +23,6 @@ jobs:
       - name: Build app
         run: pyinstaller -w -F main.py
 
-      - name: print dir-list
-        run: ls -a
-
       - name: Upload app to GitHub Packages
         uses: actions/upload-artifact@v3
         with:
