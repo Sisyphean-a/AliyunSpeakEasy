@@ -1,12 +1,14 @@
+import io
+import os
+import subprocess
 import tkinter as tk
+from datetime import datetime
 from tkinter import ttk
+
+from pydub import AudioSegment
+
 from aliyun_api import AliyunAPI
 from setting_gui import SettingsWindow
-from pydub import AudioSegment
-import io
-import subprocess
-from datetime import datetime
-import os
 
 
 class TextToSpeechApp:
@@ -87,9 +89,6 @@ class TextToSpeechApp:
             self.message_frame, text="No", command=lambda: self.handle_user_response("no")
         )
 
-        # 初始化阿里云API
-        self.aliyun_api = AliyunAPI()
-
     def save_audio(self):
         self.yield_method = self.generate_speech_with_validation()
         next(self.yield_method)
@@ -120,6 +119,9 @@ class TextToSpeechApp:
         self.generate_speech(text)
 
     def generate_speech(self,text):
+        # 初始化阿里云API
+        self.aliyun_api = AliyunAPI()
+
         self.update_text(self.message_one, "开始生成，请耐心等待")
         now = datetime.now()
         self.date = f"{now.year}-{now.month}-{now.day}-今日特价.mp3"

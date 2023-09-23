@@ -34,14 +34,14 @@
    
    # 安装环境，推荐pipenv
    winget install Python.Python.3.8
-   pip install pipenv,pyinstaller
+   pip install pipenv
    
    # 进入虚拟环境
    cd .\AliyunSpeakEasy
    pipenv shell
    
    # 打包成单文件
-   pyinstaller -F main.py
+   pyinstaller -F -w main.py
    ```
 
 2. 使用我打包的文件
