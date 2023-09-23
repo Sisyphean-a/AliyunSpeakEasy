@@ -33,7 +33,7 @@
    git clone https://github.com/Sisyphean-a/AliyunSpeakEasy.git
    
    # 安装环境，推荐pipenv
-   winget install Python.Python.3.8
+   winget install Python.Python.3.11
    pip install pipenv
    
    # 进入虚拟环境
