@@ -1,11 +1,9 @@
-import io
 import os
+import json
 import subprocess
 import tkinter as tk
 from datetime import datetime
 from tkinter import ttk
-
-from pydub import AudioSegment
 
 from aliyun_api import AliyunAPI
 from setting_gui import SettingsWindow
@@ -100,15 +98,27 @@ class TextToSpeechApp:
         if text == "":
             self.update_text(self.message_one, "文本不能为空！！")
             return
+        
+        # 读取json文件内容，进行判断
+        try:
+            with open("settings.json") as f:
+                config = json.load(f)
+        except FileNotFoundError:
+            self.update_text(self.message_one, "找不到配置文件\n 先设置一下吧")
+            return
+        
+        # 读取参数项
+        API_KEY = config["access_key_id"]
+        API_SECRET = config["access_key_secret"]
+        APPKEY = config["appkey"]
+        FILE_ADDRESS = config["download_url"]   
 
-        API_KEY = self.aliyun_api.API_KEY
-        API_SECRET = self.aliyun_api.API_SECRET
-        APPKEY = self.aliyun_api.APPKEY
+        # 判断参数项存不存在
         if API_KEY == "" or API_SECRET == "" or APPKEY == "":
-            self.update_text(self.message_one, "要先设置了才能使用")
+            self.update_text(self.message_one, "配置不全,先设置一下吧")
             return
 
-        FILE_ADDRESS = self.aliyun_api.FILE_ADDRESS
+        # 判断文件保存地址存不存在
         if FILE_ADDRESS == "":
             self.update_text(self.message_one, "文本路径为空，依然要生成吗")
             self.message_yes.grid(row=1, pady=10)
@@ -134,8 +144,9 @@ class TextToSpeechApp:
         # 调用阿里云API将文字转换为语音
         audio_data = self.aliyun_api.convert_text_to_speech(text, speed,voice)
         # 将生成的语音保存为文件
-        audio = AudioSegment.from_file(io.BytesIO(audio_data), format="mp3")
-        audio.export(self.date, format="mp3")  # 导出为MP3格式的文件
+        with open(self.date, "wb") as f:
+            f.write(audio_data)
+
 
         self.update_text(self.message_one, "语音合成完成！")
         self.update_text(self.message_two, "<" + self.date + ">")
