@@ -1,6 +1,7 @@
+import json
+import os
 import tkinter as tk
 from tkinter import ttk
-import json
 
 
 class SettingsWindow:
@@ -32,14 +33,20 @@ class SettingsWindow:
         self.download_url_entry = ttk.Entry(self.window)
         self.download_url_entry.pack()
 
-        self.save_button = ttk.Button(self.window, text="保存", command=self.save_settings)
+        self.save_button = ttk.Button(
+            self.window, text="保存", command=self.save_settings
+        )
         self.save_button.pack(pady=10)
 
         self.load_settings()
 
     def load_settings(self):
         try:
-            with open("settings.json", "r") as file:
+            user_dir = os.path.expanduser("~")
+            if not os.path.exists(os.path.join(user_dir, "AliSpeak")):
+                os.makedirs(os.path.join(user_dir, "AliSpeak"))
+            self.load_path = os.path.join(user_dir, "AliSpeak", "settings.json")
+            with open(self.load_path, "r") as file:
                 settings = json.load(file)
                 if settings:
                     self.access_key_id_entry.insert(
@@ -60,7 +67,7 @@ class SettingsWindow:
             "appkey": self.appkey_entry.get(),
             "download_url": self.download_url_entry.get(),
         }
-        with open("settings.json", "w") as file:
+        with open(self.load_path, "w") as file:
             json.dump(settings, file)
 
         self.window.destroy()

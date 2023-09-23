@@ -99,9 +99,11 @@ class TextToSpeechApp:
             self.update_text(self.message_one, "文本不能为空！！")
             return
         
-        # 读取json文件内容，进行判断
+        # 读取json配置文件内容，进行判断
+        user_dir = os.path.expanduser("~")
+        load_path = os.path.join(user_dir, "AliSpeak", "settings.json")
         try:
-            with open("settings.json") as f:
+            with open(load_path) as f:
                 config = json.load(f)
         except FileNotFoundError:
             self.update_text(self.message_one, "找不到配置文件\n 先设置一下吧")

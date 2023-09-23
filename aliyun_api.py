@@ -1,4 +1,5 @@
 import io
+import os
 import json
 
 import requests
@@ -8,7 +9,10 @@ from aliyunsdkcore.request import CommonRequest
 
 class AliyunAPI:
     def __init__(self):
-        with open("settings.json") as f:
+        # 读取json配置文件内容，进行判断
+        user_dir = os.path.expanduser("~")
+        load_path = os.path.join(user_dir, "AliSpeak", "settings.json")
+        with open(load_path) as f:
             config = json.load(f)
         self.API_KEY = config["access_key_id"]
         self.API_SECRET = config["access_key_secret"]
