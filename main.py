@@ -159,6 +159,8 @@ class TextToSpeechApp:
         # 获取当前日期
         now = datetime.now()
         self.date = now.strftime("%m%d-%H%M%S")
+
+        # 设置音频路径以及命名格式
         self.music_path = os.path.join(self.FILE_ADDRESS, f"message-{self.date}.mp3")
 
         # 调用阿里云API将文字转换为语音

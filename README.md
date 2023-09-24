@@ -14,13 +14,12 @@
 
 - 设置语速
 - 合成语音
-- 合成之后点击就能打开，不用打开文件夹翻找
+- 设置发音人
+- 设置自定义路径
+- 合成之后点击播放
 
 后续任务
-
-- 设置发音人
 - 设置语调
-- 设置自定义路径
 
 ## 使用方法
 
@@ -45,7 +44,7 @@
    pipenv shell
    
    # 打包成单文件
-   pyinstaller -F -w main.py
+   pyinstaller -F -w --icon icon.ico main.py
    ```
 
 2. 使用我打包的文件
@@ -64,6 +63,37 @@
 
 ### 开始使用
 
-点击设置，填入三大项，路径不用填，我还没有做这一个部分。。。
+点击设置，填入三大项，路径可以填可以不填，不填默认当前路径
 
-保存，然后就可以使用了，生成之后不用找文件夹，点击下面的按钮就能直接打开
+
+## 项目主要结构
+
+```shell
+C:.
+|   aliyun_api.py		# 阿里云接口调用api
+|   main.py				# 代码入口，也是代码的主体部分
+|   read_setting.py		# 配置文件读取类，用来读取配置文件信息并提供判断
+|   setting_gui.py		# 设置面板
+|
++---.github
+|   \---workflows
+|           windows-app.yml		# 调用Github Action直接生成exe文件
+|
++---test
+        aliyun_api_test.py  	# 测试阿里云接口类
+        read_setting_test.py	# 测试配置文件读取类
+        setting_gui_test.py		# 测试设置GUI面板类
+```
+
+### 推荐自定义修改内容：
+
+- main.py：
+  - 设置组件（大小、文本、位置），绘制主体GUI面板
+  - 设置发音人相关内容，搜索**voice**组件进行修改，第一个值为默认值。参考：[阿里云发音人选项](https://help.aliyun.com/document_detail/84435.html?spm=a2c4g.84425.0.i0#section-uft-ohr-827)
+  - 设置音频命名格式，搜索**music_path**变量进行修改
+- aliyun_api.py：
+  - 设置目标地址url，搜索**API_URL**变量进行修改。参考：[阿里云语音合成服务地址](https://help.aliyun.com/document_detail/84435.html?spm=a2c4g.84425.0.i0#section-nme-tcl-xuc)
+
+- setting_gui.py：
+  - 设置设置组件（大小、文本、位置），绘制设置GUI面板
+  - 设置配置文件保存地址、配置文件名称，相关参数：**user_dir**、**load_path**
