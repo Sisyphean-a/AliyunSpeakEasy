@@ -4,6 +4,19 @@ import tkinter as tk
 from tkinter import ttk
 
 
+# 单例设计模式，作用是让setting窗口只会存在一个
+def singleton(cls):
+    cls._instance = None
+
+    def get_instance(*args, **kwargs):
+        if cls._instance is None:
+            cls._instance = cls(*args, **kwargs)
+        return cls._instance
+
+    return get_instance
+
+
+@singleton
 class SettingsWindow:
     def __init__(self, parent):
         self.parent = parent
