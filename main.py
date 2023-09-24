@@ -7,6 +7,7 @@ from tkinter import ttk
 
 from aliyun_api import AliyunAPI
 from setting_gui import SettingsWindow
+from read_setting import readSetting
 
 
 class TextToSpeechApp:
@@ -17,7 +18,6 @@ class TextToSpeechApp:
         # 屏幕的宽度和高度
         start_x = (self.window.winfo_screenwidth() - 500) // 2
         self.window.geometry(f"+{start_x}+50")
-
 
         # 创建图形用户界面元素
         self.text_input = tk.Text(self.window, height=50, width=50)  # 文本输入框
@@ -37,9 +37,14 @@ class TextToSpeechApp:
         self.voice_label = ttk.Label(self.settings_frame, text="发音人选择:")
         self.voice_label.pack()
 
-        self.voice = ttk.Combobox(self.settings_frame,value=("xiaoyun","zhixiaobai", "qiaowei", "aiqi","aimei","sitong"),state="readonly",width=13)
+        self.voice = ttk.Combobox(
+            self.settings_frame,
+            value=("xiaoyun", "zhixiaobai", "qiaowei", "aiqi", "aimei", "sitong"),
+            state="readonly",
+            width=13,
+        )
         self.voice.current(0)
-        self.voice.pack(pady=(10,20))
+        self.voice.pack(pady=(10, 20))
 
         # 语音速度标签
         self.speed_label = ttk.Label(self.settings_frame, text="语音速度:")
@@ -47,7 +52,12 @@ class TextToSpeechApp:
 
         # 语音速度调节滑块
         self.speed_scale = tk.Scale(
-            self.settings_frame, from_=-50, to=50, resolution=5, orient=tk.HORIZONTAL,length=120
+            self.settings_frame,
+            from_=-50,
+            to=50,
+            resolution=5,
+            orient=tk.HORIZONTAL,
+            length=120,
         )
         self.speed_scale.set(1.0)
         self.speed_scale.pack()
@@ -69,7 +79,7 @@ class TextToSpeechApp:
         self.save_button.pack(padx=5, pady=10)
 
         # 分割线
-        self.line = ttk.Separator(self.right_frame, orient='horizontal').pack(fill='x')
+        self.line = ttk.Separator(self.right_frame, orient="horizontal").pack(fill="x")
 
         # 信息框架
         self.message_frame = ttk.Frame(self.right_frame)
@@ -81,15 +91,23 @@ class TextToSpeechApp:
         self.message_two.grid(row=3, pady=10)
 
         self.message_yes = ttk.Button(
-            self.message_frame, text="Yes", command=lambda: self.handle_user_response("yes")
+            self.message_frame,
+            text="Yes",
+            command=lambda: self.handle_user_response("yes"),
         )
         self.message_no = ttk.Button(
-            self.message_frame, text="No", command=lambda: self.handle_user_response("no")
+            self.message_frame,
+            text="No",
+            command=lambda: self.handle_user_response("no"),
         )
 
     def save_audio(self):
         self.yield_method = self.generate_speech_with_validation()
-        next(self.yield_method)
+        # next(self.yield_method)
+        try:
+            next(self.yield_method)
+        except StopIteration:
+            return
 
     def generate_speech_with_validation(self):
         text = self.text_input.get("1.0", tk.END).strip()  # 获取输入的文字
@@ -98,7 +116,7 @@ class TextToSpeechApp:
         if text == "":
             self.update_text(self.message_one, "文本不能为空！！")
             return
-        
+
         # 读取json配置文件内容，进行判断
         user_dir = os.path.expanduser("~")
         load_path = os.path.join(user_dir, "AliSpeak", "settings.json")
@@ -108,36 +126,34 @@ class TextToSpeechApp:
         except FileNotFoundError:
             self.update_text(self.message_one, "未生成配置文件\n 先设置一下吧")
             return
-        
-        # 读取参数项
-        API_KEY = config["access_key_id"]
-        API_SECRET = config["access_key_secret"]
-        APPKEY = config["appkey"]
-        FILE_ADDRESS = config["download_url"]   
 
         # 判断参数项存不存在
-        if API_KEY == "" or API_SECRET == "" or APPKEY == "":
+        read = readSetting()
+        if read.EmptyApi() == "":
             self.update_text(self.message_one, "配置不全,先设置一下吧")
             return
+        else:
+            API_KEY, API_SECRET, APPKEY = read.EmptyApi()
+            # 初始化阿里云API
+            self.aliyun_api = AliyunAPI(API_KEY, API_SECRET, APPKEY)
 
         # 判断文件保存地址存不存在
-        if FILE_ADDRESS == "":
+        if read.EmptyFile() == "":
             self.update_text(self.message_one, "文本路径为空，依然要生成吗")
             self.message_yes.grid(row=1, pady=10)
             self.message_no.grid(row=2, pady=10)
             yield
+        else:
+            self.FILE_ADDRESS = read.EmptyFile()
         # ------------^ 处理值为空的情况 ^-------------
 
         self.generate_speech(text)
 
-    def generate_speech(self,text):
-        # 初始化阿里云API
-        self.aliyun_api = AliyunAPI()
-
+    def generate_speech(self, text):
         self.update_text(self.message_one, "开始生成，请耐心等待")
         now = datetime.now()
         self.date = f"{now.year}-{now.month}-{now.day}"
-        self.music_path = f"{self.date}-今日特价.mp3"
+        self.music_path = f"{self.date}-message.mp3"
 
         # 获取设定的语音速度
         speed = self.speed_scale.get()
@@ -145,7 +161,7 @@ class TextToSpeechApp:
         voice = self.voice.get()
 
         # 调用阿里云API将文字转换为语音
-        audio_data = self.aliyun_api.convert_text_to_speech(text, speed,voice)
+        audio_data = self.aliyun_api.convert_text_to_speech(text, speed, voice)
         # 将生成的语音保存为文件
         with open(self.music_path, "wb") as f:
             f.write(audio_data)

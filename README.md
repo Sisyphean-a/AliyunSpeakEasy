@@ -33,12 +33,15 @@
    git clone https://github.com/Sisyphean-a/AliyunSpeakEasy.git
    
    # 安装环境，推荐pipenv
+   # 如果不想使用3.11，就把Pipfile以及Pipfile.lock删除再进行后续操作
    winget install Python.Python.3.11
    pip install pipenv
    
-   # 进入虚拟环境
+   # 创建虚拟环境
    cd .\AliyunSpeakEasy
    pipenv install
+
+   # 进入虚拟环境
    pipenv shell
    
    # 打包成单文件

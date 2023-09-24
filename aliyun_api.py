@@ -1,5 +1,3 @@
-import io
-import os
 import json
 
 import requests
@@ -8,19 +6,11 @@ from aliyunsdkcore.request import CommonRequest
 
 
 class AliyunAPI:
-    def __init__(self):
-        # 读取json配置文件内容，进行判断
-        user_dir = os.path.expanduser("~")
-        load_path = os.path.join(user_dir, "AliSpeak", "settings.json")
-        with open(load_path) as f:
-            config = json.load(f)
-        self.API_KEY = config["access_key_id"]
-        self.API_SECRET = config["access_key_secret"]
-        self.APPKEY = config["appkey"]
-        self.FILE_ADDRESS = config["download_url"]
+    def __init__(self, API_KEY, API_SECRET, APPKEY):
+        self.APPKEY = APPKEY
         self.API_URL = "https://nls-gateway.aliyuncs.com/stream/v1/tts"
         # self.API_URL = "https://nls-gateway.aliyuncs.com/rest/v1/tts/async"
-        self.client = AcsClient(self.API_KEY, self.API_SECRET, "cn-shanghai")
+        self.client = AcsClient(API_KEY, API_SECRET, "cn-shanghai")
 
     def convert_text_to_speech(self, text, speed, voice):
         token = self.get_access_token()
