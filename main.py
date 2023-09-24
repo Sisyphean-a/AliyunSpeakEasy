@@ -87,8 +87,8 @@ class TextToSpeechApp:
 
         self.message_one = ttk.Label(self.message_frame, text="输入文本以开始生成")
         self.message_one.grid(row=0, pady=10)
-        self.message_two = ttk.Button(self.message_frame, text="合成后，点我播放")
-        self.message_two.grid(row=3, pady=10)
+        self.message_button = ttk.Button(self.message_frame, text="合成后，点我播放")
+        self.message_button.grid(row=3, pady=10)
 
         self.message_yes = ttk.Button(
             self.message_frame,
@@ -158,9 +158,8 @@ class TextToSpeechApp:
 
         # 获取当前日期
         now = datetime.now()
-        self.date = f"{now.year}-{now.month}-{now.day}"
-        self.music_path = f"{self.date}-message.mp3"
-        self.music_path = os.path.join(self.FILE_ADDRESS, f"{self.date}-message.mp3")
+        self.date = now.strftime("%m%d-%H%M%S")
+        self.music_path = os.path.join(self.FILE_ADDRESS, f"message-{self.date}.mp3")
 
         # 调用阿里云API将文字转换为语音
         audio_data = self.aliyun_api.convert_text_to_speech(text, speed, voice)
@@ -169,8 +168,8 @@ class TextToSpeechApp:
             f.write(audio_data)
 
         self.update_text(self.message_one, "语音合成完成！")
-        self.update_text(self.message_two, f"{self.date}-message.mp3")
-        self.message_two.config(command=self.play_audio)
+        self.update_text(self.message_button, f"message-{self.date}.mp3")
+        self.message_button.config(command=self.play_audio)
 
     # 选择是或者否之后会调用的函数
     def handle_user_response(self, event):
@@ -194,14 +193,14 @@ class TextToSpeechApp:
 
     # 点击播放之后执行的代码
     def play_audio(self):
-        file_name = self.music_path
-        file_abs = os.getcwd()
-        file_path = os.path.join(file_abs, file_name)
         # 调用默认播放器播放音乐
-        subprocess.run(["start", file_path], shell=True)
+        subprocess.run(["start", self.music_path], shell=True)
 
     def open_settings(self):
         settings_window = SettingsWindow(self.window)
+
+    def open_floder(self):
+        os.startfile(self.FILE_ADDRESS)
 
     def run(self):
         self.window.mainloop()  # 开始运行应用
