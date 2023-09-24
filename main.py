@@ -39,7 +39,7 @@ class TextToSpeechApp:
 
         self.voice = ttk.Combobox(
             self.settings_frame,
-            value=("xiaoyun", "zhixiaobai", "qiaowei", "aiqi", "aimei", "sitong"),
+            value=("zhixiaobai", "xiaoyun", "qiaowei", "aiqi", "aimei", "sitong"),
             state="readonly",
             width=13,
         )
@@ -101,16 +101,19 @@ class TextToSpeechApp:
             command=lambda: self.handle_user_response("no"),
         )
 
+    # 点击生成会调用这个函数
     def save_audio(self):
         self.yield_method = self.generate_speech_with_validation()
-        # next(self.yield_method)
         try:
             next(self.yield_method)
         except StopIteration:
             return
 
+    # 语音合成之前的预备代码，获取设定值并判断空值
     def generate_speech_with_validation(self):
         text = self.text_input.get("1.0", tk.END).strip()  # 获取输入的文字
+        speed = self.speed_scale.get()  # 获取设定的语音速度
+        voice = self.voice.get()  # 获取设定的发音人
 
         # ------------v 处理值为空的情况 v-------------
         if text == "":
@@ -128,7 +131,7 @@ class TextToSpeechApp:
             return
 
         # 判断参数项存不存在
-        read = readSetting()
+        read = readSetting(load_path)
         if read.EmptyApi() == "":
             self.update_text(self.message_one, "配置不全,先设置一下吧")
             return
@@ -147,18 +150,17 @@ class TextToSpeechApp:
             self.FILE_ADDRESS = read.EmptyFile()
         # ------------^ 处理值为空的情况 ^-------------
 
-        self.generate_speech(text)
+        self.generate_speech(text, speed, voice)
 
-    def generate_speech(self, text):
+    # 语音合成代码
+    def generate_speech(self, text, speed, voice):
         self.update_text(self.message_one, "开始生成，请耐心等待")
+
+        # 获取当前日期
         now = datetime.now()
         self.date = f"{now.year}-{now.month}-{now.day}"
         self.music_path = f"{self.date}-message.mp3"
-
-        # 获取设定的语音速度
-        speed = self.speed_scale.get()
-        # 获取设定的发音人
-        voice = self.voice.get()
+        self.music_path = os.path.join(self.FILE_ADDRESS, f"{self.date}-message.mp3")
 
         # 调用阿里云API将文字转换为语音
         audio_data = self.aliyun_api.convert_text_to_speech(text, speed, voice)
@@ -167,9 +169,10 @@ class TextToSpeechApp:
             f.write(audio_data)
 
         self.update_text(self.message_one, "语音合成完成！")
-        self.update_text(self.message_two, "<" + self.music_path + ">")
+        self.update_text(self.message_two, f"{self.date}-message.mp3")
         self.message_two.config(command=self.play_audio)
 
+    # 选择是或者否之后会调用的函数
     def handle_user_response(self, event):
         if event == "yes":
             self.message_yes.grid_forget()
@@ -184,18 +187,21 @@ class TextToSpeechApp:
             self.open_settings()
             self.update_text(self.message_one, "重新点击合成吧")
 
+    # 消息组件更新文本内容
     def update_text(self, object, new_text):
         object.config(text=new_text)
         self.window.update()
 
+    # 点击播放之后执行的代码
     def play_audio(self):
         file_name = self.music_path
         file_abs = os.getcwd()
         file_path = os.path.join(file_abs, file_name)
+        # 调用默认播放器播放音乐
         subprocess.run(["start", file_path], shell=True)
 
     def open_settings(self):
-        SettingsWindow(self.window)
+        settings_window = SettingsWindow(self.window)
 
     def run(self):
         self.window.mainloop()  # 开始运行应用

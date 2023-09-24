@@ -3,10 +3,8 @@ import json
 
 
 class readSetting:
-    def __init__(self):
+    def __init__(self,load_path):
         # 读取json配置文件内容，进行判断
-        user_dir = os.path.expanduser("~")
-        load_path = os.path.join(user_dir, "AliSpeak", "settings.json")
         with open(load_path) as f:
             config = json.load(f)
         self.API_KEY = config["access_key_id"]
