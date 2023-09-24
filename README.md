@@ -38,6 +38,7 @@
    
    # 进入虚拟环境
    cd .\AliyunSpeakEasy
+   pipenv install
    pipenv shell
    
    # 打包成单文件
