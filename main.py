@@ -1,5 +1,6 @@
 import os
 import json
+import ctypes
 import subprocess
 import tkinter as tk
 from datetime import datetime
@@ -20,6 +21,13 @@ class TextToSpeechApp:
         # 屏幕的宽度和高度
         start_x = (self.window.winfo_screenwidth() - 500) // 2
         self.window.geometry(f"+{start_x}+50")
+
+        # 设置高DPI
+        # 调用api设置成由应用程序缩放
+        ctypes.windll.shcore.SetProcessDpiAwareness(1)
+        # 调用api获得当前的缩放因子
+        ScaleFactor = ctypes.windll.shcore.GetScaleFactorForDevice(0)
+        self.window.tk.call("tk", "scaling", ScaleFactor / 75)
 
         # 创建图形用户界面元素
         self.text_input = tk.Text(self.window, height=50, width=50)  # 文本输入框

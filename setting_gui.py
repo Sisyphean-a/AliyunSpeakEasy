@@ -26,7 +26,7 @@ class SettingsWindow:
         self.window = tk.Toplevel(parent)
         self.window.title("设置")
         # 设置窗口最小尺寸
-        self.window.minsize(300, 350)
+        self.window.minsize(300, 380)
         x = parent.winfo_x() + 90
         y = parent.winfo_y() + 200
         self.window.geometry(f"300x260+{x}+{y}")
