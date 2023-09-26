@@ -86,7 +86,7 @@ class SettingsWindow:
                 os.makedirs(os.path.join(user_dir, "AliSpeak"))
             # 获取目标文件夹路径
             self.load_path = os.path.join(user_dir, "AliSpeak", "settings.json")
-            with open(self.load_path, "r",encoding="utf-8") as file:
+            with open(self.load_path, "r", encoding="utf-8") as file:
                 settings = json.load(file)
                 if settings:
                     self.access_key_id_entry.insert(
@@ -107,15 +107,15 @@ class SettingsWindow:
             "appkey": self.appkey_entry.get(),
             "download_url": self.download_url_entry.get(),
         }
-        with open(self.load_path, "w",encoding="utf-8") as file:
+        with open(self.load_path, "w", encoding="utf-8") as file:
             json.dump(settings, file)
 
         self.window.destroy()
-    
+
     def select_folder(self):
         # 弹出文件夹选择窗口
         path = filedialog.askdirectory(parent=self.window, master=self.window)
-        
+
         # 将文件夹路径设置到输入框
         text = self.download_url_entry.get()
         if not path == "":
@@ -123,8 +123,7 @@ class SettingsWindow:
         self.download_url_entry.insert(0, path)
 
         self.window.attributes("-topmost", True)
-    
+
     def on_close(self):
         self.window.destroy()
         type(self)._instance = None
-
