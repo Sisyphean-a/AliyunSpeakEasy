@@ -21,7 +21,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Build app
-        run: pyinstaller -w -F main.py
+        run: pyinstaller -F -w --icon icon.ico main.py
 
       - name: Upload app to Releases
         uses: softprops/action-gh-release@v1
