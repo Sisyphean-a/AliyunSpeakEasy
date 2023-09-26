@@ -29,6 +29,7 @@ class SettingsWindow:
         x = parent.winfo_x() + 90
         y = parent.winfo_y() + 200
         self.window.geometry(f"300x260+{x}+{y}")
+        self.window.protocol("WM_DELETE_WINDOW", self.on_close)
 
         # AccessKey ID组件
         self.access_key_id_label = ttk.Label(self.window, text="AccessKey ID:")
@@ -122,4 +123,8 @@ class SettingsWindow:
         self.download_url_entry.insert(0, path)
 
         self.window.attributes("-topmost", True)
+    
+    def on_close(self):
+        self.window.destroy()
+        type(self)._instance = None
 
