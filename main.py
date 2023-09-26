@@ -1,9 +1,12 @@
 import os
 import json
+import ctypes
 import subprocess
 import tkinter as tk
 from datetime import datetime
-from tkinter import ttk
+
+# from tkinter import ttk
+import ttkbootstrap as ttk
 
 from aliyun_api import AliyunAPI
 from setting_gui import SettingsWindow
@@ -18,6 +21,13 @@ class TextToSpeechApp:
         # 屏幕的宽度和高度
         start_x = (self.window.winfo_screenwidth() - 500) // 2
         self.window.geometry(f"+{start_x}+50")
+
+        # 设置高DPI
+        # 调用api设置成由应用程序缩放
+        ctypes.windll.shcore.SetProcessDpiAwareness(1)
+        # 调用api获得当前的缩放因子
+        ScaleFactor = ctypes.windll.shcore.GetScaleFactorForDevice(0)
+        self.window.tk.call("tk", "scaling", ScaleFactor / 75)
 
         # 创建图形用户界面元素
         self.text_input = tk.Text(self.window, height=50, width=50)  # 文本输入框
@@ -47,7 +57,7 @@ class TextToSpeechApp:
         self.voice.pack(pady=(10, 20))
 
         # 语音速度标签
-        self.speed_label = ttk.Label(self.settings_frame, text="语音速度:")
+        self.speed_label = ttk.Label(self.settings_frame, text="语音速度: 0")
         self.speed_label.pack()
 
         # 语音速度调节滑块
@@ -58,6 +68,7 @@ class TextToSpeechApp:
             resolution=5,
             orient=tk.HORIZONTAL,
             length=120,
+            command=self.on_scale_changed,
         )
         self.speed_scale.set(1.0)
         self.speed_scale.pack()
@@ -67,7 +78,9 @@ class TextToSpeechApp:
         self.buttons_frame.pack(padx=10, pady=10)
 
         self.settings_button = ttk.Button(
-            self.buttons_frame, text="设置", command=self.open_settings
+            self.buttons_frame,
+            text="设置",
+            command=self.open_settings,
         )
         # 设置按钮
         self.settings_button.pack(padx=5, pady=10)
@@ -203,6 +216,14 @@ class TextToSpeechApp:
 
     def open_floder(self):
         os.startfile(self.FILE_ADDRESS)
+
+    # 滑块函数，移动滑块会触发这个值
+    def on_scale_changed(self, value):
+        # # 将值四舍五入到最近的5的倍数
+        # rounded_value = round(float(value) / 5) * 5
+        # self.speed_scale.set(rounded_value)
+        # 更新标签的文本
+        self.speed_label.config(text=f"语音速度: {value}")
 
     def run(self):
         self.window.mainloop()  # 开始运行应用
