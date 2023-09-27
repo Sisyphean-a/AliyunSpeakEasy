@@ -17,6 +17,7 @@ class TextToSpeechApp:
     def __init__(self):
         self.window = tk.Tk()
         self.window.title("文字转语音应用")  # 设置窗口标题
+        self.window.iconbitmap(default="icon.ico") # 设置右上角图标
         self.window.resizable(False, False)
         # 屏幕的宽度和高度
         start_x = (self.window.winfo_screenwidth() - 500) // 2
