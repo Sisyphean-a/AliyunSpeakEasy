@@ -3,9 +3,9 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from read_setting import readSetting
+from read_setting import ReadSetting
 
-read = readSetting()
+read = ReadSetting()
 
 if read.EmptyApi() == "":
     print("1111")

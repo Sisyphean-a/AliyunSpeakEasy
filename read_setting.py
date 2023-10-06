@@ -1,8 +1,7 @@
-import os
 import json
 
 
-class readSetting:
+class ReadSetting:
     def __init__(self,load_path):
         # 读取json配置文件内容，进行判断
         with open(load_path) as f:

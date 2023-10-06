@@ -51,7 +51,7 @@ class SettingsWindow:
         self.appkey_entry.pack(pady=(0, 10))
 
         # 分割线
-        self.line = ttk.Separator(self.window, orient="horizontal").pack(
+        ttk.Separator(self.window, orient="horizontal").pack(
             fill="x", padx=70, pady=10
         )
 
@@ -66,7 +66,7 @@ class SettingsWindow:
         self.select_folder_button.pack(pady=(0, 10))
 
         # 分割线
-        self.line = ttk.Separator(self.window, orient="horizontal").pack(
+        ttk.Separator(self.window, orient="horizontal").pack(
             fill="x", padx=70, pady=10
         )
 

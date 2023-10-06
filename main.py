@@ -10,14 +10,14 @@ import ttkbootstrap as ttk
 
 from aliyun_api import AliyunAPI
 from setting_gui import SettingsWindow
-from read_setting import readSetting
+from read_setting import ReadSetting
 
 
 class TextToSpeechApp:
     def __init__(self):
         self.window = tk.Tk()
         self.window.title("文字转语音应用")  # 设置窗口标题
-        self.window.iconbitmap(default="icon.ico") # 设置右上角图标
+        self.window.iconbitmap(default="icon.ico")  # 设置右上角图标
         self.window.resizable(False, False)
         # 屏幕的宽度和高度
         start_x = (self.window.winfo_screenwidth() - 500) // 2
@@ -27,8 +27,8 @@ class TextToSpeechApp:
         # 调用api设置成由应用程序缩放
         ctypes.windll.shcore.SetProcessDpiAwareness(1)
         # 调用api获得当前的缩放因子
-        ScaleFactor = ctypes.windll.shcore.GetScaleFactorForDevice(0)
-        self.window.tk.call("tk", "scaling", ScaleFactor / 75)
+        scale_factor = ctypes.windll.shcore.GetScaleFactorForDevice(0)
+        self.window.tk.call("tk", "scaling", scale_factor / 75)
 
         # 创建图形用户界面元素
         self.text_input = tk.Text(self.window, height=50, width=50)  # 文本输入框
@@ -93,7 +93,7 @@ class TextToSpeechApp:
         self.save_button.pack(padx=5, pady=10)
 
         # 分割线
-        self.line = ttk.Separator(self.right_frame, orient="horizontal").pack(fill="x")
+        ttk.Separator(self.right_frame, orient="horizontal").pack(fill="x")
 
         # 信息框架
         self.message_frame = ttk.Frame(self.right_frame)
@@ -139,13 +139,13 @@ class TextToSpeechApp:
         load_path = os.path.join(user_dir, "AliSpeak", "settings.json")
         try:
             with open(load_path) as f:
-                config = json.load(f)
+                json.load(f)
         except FileNotFoundError:
             self.update_text(self.message_one, "未生成配置文件\n 先设置一下吧")
             return
 
         # 判断参数项存不存在
-        read = readSetting(load_path)
+        read = ReadSetting(load_path)
         if read.EmptyApi() == "":
             self.update_text(self.message_one, "配置不全,先设置一下吧")
             return
@@ -213,7 +213,7 @@ class TextToSpeechApp:
         subprocess.run(["start", self.music_path], shell=True)
 
     def open_settings(self):
-        settings_window = SettingsWindow(self.window)
+        SettingsWindow(self.window)
 
     def open_floder(self):
         os.startfile(self.FILE_ADDRESS)
