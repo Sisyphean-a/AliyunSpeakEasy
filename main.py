@@ -12,7 +12,9 @@ from aliyun_api import AliyunAPI
 from setting_gui import SettingsWindow
 from read_setting import ReadSetting
 
+
 # 新分支第一次提交
+# 第二次提交
 class TextToSpeechApp:
     def __init__(self):
         self.window = tk.Tk()
