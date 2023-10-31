@@ -15,6 +15,7 @@ from read_setting import ReadSetting
 
 # 新分支第一次提交
 # 第二次提交
+# 又一个分支
 class TextToSpeechApp:
     def __init__(self):
         self.window = tk.Tk()
