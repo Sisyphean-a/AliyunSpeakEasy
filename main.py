@@ -13,6 +13,7 @@ from setting_gui import SettingsWindow
 from read_setting import ReadSetting
 
 
+# 又一个分支
 class TextToSpeechApp:
     def __init__(self):
         self.window = tk.Tk()
